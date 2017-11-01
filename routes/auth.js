@@ -13,12 +13,14 @@ const user_query = (q) => {
 
 // sign up or update information
 router.post('/register', (req, res) => {
+  console.log('got request')
+  console.log(req.body)
   var temp = new User({
-    name: req.body.name,
+    first_name: req.body.firstName,
+    last_name: req.body.lastName,
     email: req.body.email,
-    school: req.body.school,
     password: req.body.password,
-    current_page: 1
+    current_page: 0
   })
   user_query(req.body).exec((err, data) => {
     if (err) {
@@ -29,32 +31,23 @@ router.post('/register', (req, res) => {
         if (err) {
           throw err
         }
-        res.send(`Added new user with email '` + req.body.email + `' to mLab database`)
+        // res.send(`Successfully registered '` + req.body.email + `'!`)
+        res.send({
+          authorized: true,
+          firstName: req.body.firstName,
+          page: 0
+        })
+
       })
     } else {
-      // update user here
-      // todo -> if found, just log them in. update should be a separate route.
-      User.update(
-      {
-        email: req.body.email
-      },
-      {
-        name: req.body.name,
-        school: req.body.school,
-        password: req.body.password
-      }, function (err) {
-        if (err) {
-          throw err;
-        }
-        res.send(`Updated user with email '` + req.body.email + `' in mLab database`)
-      })
+      // res.send('a user with that email already exists!')
+      res.send({authorized: false})
     }
   })
 })
 
-router.post('/update', (req, res) => {
-  console.log('updating')
-  console.log(req.body)
+router.post('/update', (req, res) => { // to update pages and info
+
   if (req.session && req.session.user) { // Check if session exists
     User.findOne({ email: req.session.user.email }, function (err, user) {
       if (!user) {
@@ -64,6 +57,7 @@ router.post('/update', (req, res) => {
         User.update(
           { email: req.session.user.email },
           { current_page: req.body.current_page },
+          // todo: survey responses here
           (err) => {
             if (err) {
               throw err;
@@ -76,6 +70,7 @@ router.post('/update', (req, res) => {
   } else {
     res.send({authorized: false})
   }
+
 })
 
 // log user in
@@ -84,14 +79,15 @@ router.post('/login', function(req, res) {
     if (!user) { // if no user
       res.send({authorized: false})
     } else { // if user
-      if (req.body.password === user.password) { // if password match
+      if (req.body.password === user.password) { // if password match TODO: hash
         req.session.login(user) // call login method
         req.session.save((err) => {
           console.log('from login')
           console.log(req.session)
           res.send({
             authorized: true,
-            user: user
+            firstName: user.first_name,
+            page: user.current_page
           })
         })
       } else { // passwords do not match
@@ -116,7 +112,8 @@ router.get('/authenticate', function(req, res) {
       } else {
         res.send({
           authorized: true,
-          user: user // eventually will include 'last page' and other client side render information
+          firstName: user.first_name,
+          page: user.current_page
         })
       }
     });

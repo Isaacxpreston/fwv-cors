@@ -8,11 +8,11 @@ const mongoose = require('mongoose');
 // };
 
 const user_schema = mongoose.Schema({
-  name: {type: String, required: true},
+  first_name: {type: String, required: true},
+  last_name: {type: String, required: true},
   email: {type: String, required: true},
-  school: {type: String, required: true},
   password: {type: String, required: true},
-  current_page: {type: Number, required: false}
+  current_page: {type: Number, required: true}
 });
 
 const User = mongoose.model('User', user_schema);
