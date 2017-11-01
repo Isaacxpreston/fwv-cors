@@ -5,25 +5,25 @@ var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const keys = require('./keys.js')
+// const keys = require('./keys.js')
 const app = express()
 
 const auth_route = require('./routes/auth.js')
 
 // connect to mLab
-mongoose.connect(keys.mlab)
-// mongoose.connect(process.env.MLAB)
+// mongoose.connect(keys.mlab)
+mongoose.connect(process.env.MLAB)
 
 // set up sessions
-const mongo_store = new MongoStore({
-  url: keys.mlab,
-  ttl: 14 * 24 * 60 * 60
-})
-
 // const mongo_store = new MongoStore({
-//   url: process.env.MLAB,
+//   url: keys.mlab,
 //   ttl: 14 * 24 * 60 * 60
 // })
+
+const mongo_store = new MongoStore({
+  url: process.env.MLAB,
+  ttl: 14 * 24 * 60 * 60
+})
 
 app.use(session({
   store: mongo_store,
