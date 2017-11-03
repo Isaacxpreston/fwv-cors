@@ -41,10 +41,10 @@ router.post('/register', (req, res) => {
         }
 
         // copied from login
-        req.session.login(user) // call login method
+        req.session.login(temp) // call login method
 
         req.session.save((err) => {
-          
+
           // res.send({
           //   authorized: true,
           //   firstName: user.first_name,
