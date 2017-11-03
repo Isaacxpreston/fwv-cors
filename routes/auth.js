@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router()
+const bcrypt = require('bcryptjs');
 const User = require('../schema/user_schema.js')
 
 const user_query = (q) => {
@@ -13,15 +14,21 @@ const user_query = (q) => {
 
 // sign up or update information
 router.post('/register', (req, res) => {
-  console.log('got request')
-  console.log(req.body)
-  var temp = new User({
+
+  let createPassword = (password) => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+  }
+
+  let temp = new User({
     first_name: req.body.firstName,
     last_name: req.body.lastName,
     email: req.body.email,
-    password: req.body.password,
-    current_page: 0
+    password: createPassword(req.body.password),
+    current_page: 0,
+    preSurveyData: [],
+    postSurveyData: []
   })
+
   user_query(req.body).exec((err, data) => {
     if (err) {
       throw err
@@ -31,16 +38,13 @@ router.post('/register', (req, res) => {
         if (err) {
           throw err
         }
-        // res.send(`Successfully registered '` + req.body.email + `'!`)
         res.send({
           authorized: true,
           firstName: req.body.firstName,
-          page: 0
+          page: 0,
         })
-
       })
     } else {
-      // res.send('a user with that email already exists!')
       res.send({authorized: false})
     }
   })
@@ -79,11 +83,9 @@ router.post('/login', function(req, res) {
     if (!user) { // if no user
       res.send({authorized: false})
     } else { // if user
-      if (req.body.password === user.password) { // if password match TODO: hash
+      if (user.comparePassword(req.body.password)) { // if password match
         req.session.login(user) // call login method
         req.session.save((err) => {
-          console.log('from login')
-          console.log(req.session)
           res.send({
             authorized: true,
             firstName: user.first_name,
@@ -91,7 +93,6 @@ router.post('/login', function(req, res) {
           })
         })
       } else { // passwords do not match
-        // req.session.reset()
         res.send({authorized: false})
       }
     }
@@ -100,8 +101,6 @@ router.post('/login', function(req, res) {
 
 // check if user is authenticated
 router.get('/authenticate', function(req, res) {
-  console.log('from authenticate')
-  console.log(req.session)
   if (req.session && req.session.user) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
     User.findOne({ email: req.session.user.email }, function (err, user) {

@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const app = express()
 
 const auth_route = require('./routes/auth.js')
+const surveyRoute = require('./routes/survey.js')
 
 // connect to mLab
 // mongoose.connect(keys.mlab)
@@ -50,6 +51,7 @@ app.use(function(req, res, next) {
 })
 
 app.use('/auth', auth_route)
+app.use('/survey', surveyRoute)
 
 // send index.html to client
 app.get("*", (req, res) => (

@@ -1,19 +1,21 @@
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcryptjs');
 
 // userSchema.methods.generateHash = phone => bcrypt.hashSync(phone, bcrypt.genSaltSync(8), null);
 
-// userSchema.methods.comparePassword = function (phone) {
-//   return bcrypt.compareSync(phone, this.phone);
-// };
-
-const user_schema = mongoose.Schema({
+let user_schema = mongoose.Schema({
   first_name: {type: String, required: true},
   last_name: {type: String, required: true},
   email: {type: String, required: true},
   password: {type: String, required: true},
-  current_page: {type: Number, required: true}
+  current_page: {type: Number, required: true},
+  preSurveyData: {type: Array},
+  postSurveyData: {type: Array}
 });
+
+user_schema.methods.comparePassword = function (comparePassword) {
+  return bcrypt.compareSync(comparePassword, this.password);
+};
 
 const User = mongoose.model('User', user_schema);
 
