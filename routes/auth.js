@@ -25,7 +25,7 @@ router.post('/register', (req, res) => {
     email: req.body.email,
     password: createPassword(req.body.password),
     current_page: 0,
-    preSurveyData: [],
+    preSurveyData: [{'test': 'yeah man'}],
     postSurveyData: []
   })
 
@@ -61,7 +61,6 @@ router.post('/update', (req, res) => { // to update pages and info
         User.update(
           { email: req.session.user.email },
           { current_page: req.body.current_page },
-          // todo: survey responses here
           (err) => {
             if (err) {
               throw err;
