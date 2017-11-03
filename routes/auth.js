@@ -35,33 +35,15 @@ router.post('/register', (req, res) => {
     }
     if (!data) {
       temp.save((err) => {
-
         if (err) {
           throw err
         }
-
-        // copied from login
-        req.session.login(temp) // call login method
-
-        req.session.save((err) => {
-
-          // res.send({
-          //   authorized: true,
-          //   firstName: user.first_name,
-          //   page: user.current_page
-          // })
-
-          res.send({
-            authorized: true,
-            firstName: req.body.firstName,
-            page: 0,
-          })
-
+        res.send({
+          authorized: true,
+          firstName: req.body.firstName,
+          page: 0,
         })
-        
       })
-
-
     } else {
       res.send({authorized: false})
     }
