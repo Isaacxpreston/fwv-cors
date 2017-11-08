@@ -5,7 +5,7 @@ const User = require('../schema/user_schema.js')
 
 const user_query = (q) => {
   return User.findOne({
-    email: q.email
+    email: q.email.toLowerCase()
   })
 }
 
@@ -22,7 +22,7 @@ router.post('/register', (req, res) => {
   let temp = new User({
     first_name: req.body.firstName,
     last_name: req.body.lastName,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     password: createPassword(req.body.password),
     current_page: 0,
     preSurveyData: [{'test': 'yeah man'}],
@@ -53,7 +53,8 @@ router.post('/register', (req, res) => {
 router.post('/update', (req, res) => { // to update pages and info
 
   if (req.session && req.session.user) { // Check if session exists
-    User.findOne({ email: req.session.user.email }, function (err, user) {
+    let queryEmail = req.session.user.email.toLowerCase()
+    User.findOne({ email: queryEmail }, function (err, user) {
       if (!user) {
         req.session.reset()
         res.send({authorized: false})
@@ -78,7 +79,8 @@ router.post('/update', (req, res) => { // to update pages and info
 
 // log user in
 router.post('/login', function(req, res) {
-  User.findOne({ email: req.body.email }, function(err, user) {
+  let queryEmail = req.body.email.toLowerCase()
+  User.findOne({ email: queryEmail }, function(err, user) {
     if (!user) { // if no user
       res.send({authorized: false})
     } else { // if user
@@ -102,7 +104,8 @@ router.post('/login', function(req, res) {
 router.get('/authenticate', function(req, res) {
   if (req.session && req.session.user) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    User.findOne({ email: req.session.user.email }, function (err, user) {
+    let queryEmail = req.session.user.email.toLowerCase()
+    User.findOne({ email: queryEmail }, function (err, user) {
       if (!user) {
         // reset session if user not found
         req.session.destroy()
