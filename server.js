@@ -5,23 +5,27 @@ var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-// const keys = require('./keys.js')
+
+//
+// const keys = require('./keys.js') // development
+//
+
 const app = express()
 
 const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
 
 // connect to mLab
-// mongoose.connect(keys.mlab)
-mongoose.connect(process.env.MLAB)
+// mongoose.connect(keys.mlab) // development
+mongoose.connect(process.env.MLAB) // production
 
 // set up sessions
-// const mongo_store = new MongoStore({
+// const mongo_store = new MongoStore({ // development
 //   url: keys.mlab,
 //   ttl: 14 * 24 * 60 * 60
 // })
 
-const mongo_store = new MongoStore({
+const mongo_store = new MongoStore({ // production
   url: process.env.MLAB,
   ttl: 14 * 24 * 60 * 60
 })
