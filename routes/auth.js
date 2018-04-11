@@ -25,7 +25,7 @@ router.post('/register', (req, res) => {
     email: req.body.email.toLowerCase(),
     password: createPassword(req.body.password),
     current_page: 0,
-    preSurveyData: [{'test': 'yeah man'}],
+    preSurveyData: [],
     postSurveyData: []
   })
 
