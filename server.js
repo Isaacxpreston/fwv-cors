@@ -1,5 +1,6 @@
 // dependencies
 const express = require('express')
+const cors = require('cors')
 const path = require('path')
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
@@ -11,6 +12,11 @@ const bodyParser = require('body-parser')
 //
 
 const app = express()
+
+// reference: https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
+app.use(cors({
+  credentials: true,
+}))
 
 const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
@@ -51,12 +57,12 @@ app.use(express.static(path.join(__dirname, './dist')))
 app.use(bodyParser.json())
 
 // CORS
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next()
-})
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*")
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+//   res.header('Access-Control-Allow-Credentials', 'true');
+//   next()
+// })
 
 app.use('/auth', auth_route)
 app.use('/survey', surveyRoute)
