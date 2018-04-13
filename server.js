@@ -19,6 +19,7 @@ var allowedOrigins = [
   'https://futures-without-violence-vpv.herokuapp.com',
   'https://changingmindsnow.org'
 ];
+
 app.use(cors({
   credentials: true,
   origin: function (origin, callback) {
@@ -58,7 +59,6 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    domain: '.changingmindsnow.org',
     secure: false,
     httpOnly: false
   }
