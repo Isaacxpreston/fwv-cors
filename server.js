@@ -35,11 +35,15 @@ app.use(session({
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true,
-  cookie: { secure: false, httpOnly: false}
+  cookie: {
+    domain: '.changingmindsnow.org',
+    secure: false,
+    httpOnly: false
+  }
 }))
 
 // set login method on session
-session.Session.prototype.login = function(user) {
+session.Session.prototype.login = function (user) {
   this.user = user;
 };
 
@@ -47,7 +51,7 @@ app.use(express.static(path.join(__dirname, './dist')))
 app.use(bodyParser.json())
 
 // CORS
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   res.header('Access-Control-Allow-Credentials', 'true');
