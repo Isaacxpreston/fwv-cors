@@ -8,6 +8,7 @@ router.post('/presurvey', (req, res) => { // to update pages and info
   console.log('from pre survey')
   console.log(req.body)
   console.log('session')
+  console.log(req.session)
   console.log(req.session.user)
   
   if (req.session && req.session.user) { // Check if session exists
