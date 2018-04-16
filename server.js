@@ -28,7 +28,8 @@ var allowedOrigins = [
   'https://futures-test-cors.herokuapp.com',
   'https://futures-without-violence-vpv.herokuapp.com',
   'https://changingmindsnow.org',
-  'http://localhost:4000'
+  'http://localhost:4000',
+  'https://localhost:4000'
 ];
 
 // cors 2
