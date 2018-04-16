@@ -26,30 +26,44 @@ const app = express()
 // })
 
 
-// reference: https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
-var allowedOrigins = [
-  'https://futures-test-cors.herokuapp.com',
-  'https://futures-without-violence-vpv.herokuapp.com',
-  'https://changingmindsnow.org',
-  'http://localhost:4000',
-  'https://localhost:4000'
-];
+// cors 1.5
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  if ('OPTIONS' == req.method) {
+       res.send(200);
+   } else {
+       next();
+   }
+});
 
-// cors 2
-app.use(cors({
-  credentials: true,
-  origin: function (origin, callback) {
-    // allow requests with no origin 
-    // (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      var msg = 'The CORS policy for this site does not ' +
-        'allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  }
-}));
+
+// reference: https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
+// var allowedOrigins = [
+//   'https://futures-test-cors.herokuapp.com',
+//   'https://futures-without-violence-vpv.herokuapp.com',
+//   'https://changingmindsnow.org',
+//   'http://localhost:4000',
+//   'https://localhost:4000'
+// ];
+
+// // cors 2
+// app.use(cors({
+//   credentials: true,
+//   origin: function (origin, callback) {
+//     // allow requests with no origin 
+//     // (like mobile apps or curl requests)
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       var msg = 'The CORS policy for this site does not ' +
+//         'allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 
 const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
@@ -73,10 +87,10 @@ app.use(session({
   store: mongo_store,
   secret: 'keyboard cat',
   resave: true,
-  domain: '.changingmindsnow.org',
+  // domain: '.changingmindsnow.org',
   saveUninitialized: true,
   cookie: {
-    domain: '.changingmindsnow.org',
+    // domain: '.changingmindsnow.org',
     secure: false,
     httpOnly: false
   }
