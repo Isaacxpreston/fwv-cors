@@ -1,6 +1,5 @@
 // dependencies
 const express = require('express')
-const cors = require('cors')
 const path = require('path')
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
@@ -10,7 +9,8 @@ const bodyParser = require('body-parser')
 //
 // const keys = require('./keys.js') // development
 const keys = {
-  mlab: 'mongodb://isaac_preston:vpv2008@ds017886.mlab.com:17886/isaac_mongodb',
+  // mlab: 'mongodb://isaac_preston:vpv2008@ds017886.mlab.com:17886/isaac_mongodb',
+  mlab: 'mongodb://chgmindsmdbuser:UFuZDy8Ul3g9LFB@ds123906-a0.mlab.com:23906,ds123906-a1.mlab.com:23906/changingminds?replicaSet=rs-ds123906'
 }
 //
 
@@ -18,15 +18,7 @@ const app = express()
 
 
 // CORS
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*")
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   next()
-// })
-
-
-// cors 1.5
+// reference: https://stackoverflow.com/questions/32424699/passport-express-session-auth-breaking-when-moving-server-to-a-cors-location
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Origin', req.headers.origin);
@@ -38,32 +30,6 @@ app.use(function(req, res, next) {
        next();
    }
 });
-
-
-// reference: https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
-// var allowedOrigins = [
-//   'https://futures-test-cors.herokuapp.com',
-//   'https://futures-without-violence-vpv.herokuapp.com',
-//   'https://changingmindsnow.org',
-//   'http://localhost:4000',
-//   'https://localhost:4000'
-// ];
-
-// // cors 2
-// app.use(cors({
-//   credentials: true,
-//   origin: function (origin, callback) {
-//     // allow requests with no origin 
-//     // (like mobile apps or curl requests)
-//     if (!origin) return callback(null, true);
-//     if (allowedOrigins.indexOf(origin) === -1) {
-//       var msg = 'The CORS policy for this site does not ' +
-//         'allow access from the specified Origin.';
-//       return callback(new Error(msg), false);
-//     }
-//     return callback(null, true);
-//   }
-// }));
 
 const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
