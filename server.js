@@ -8,18 +8,30 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 //
-// const keys = require('./keys.js') // development
+const keys = require('./keys.js') // development
 //
 
 const app = express()
+
+
+// CORS
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next()
+})
+
 
 // reference: https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
 var allowedOrigins = [
   'https://futures-test-cors.herokuapp.com',
   'https://futures-without-violence-vpv.herokuapp.com',
-  'https://changingmindsnow.org'
+  'https://changingmindsnow.org',
+  'http://localhost:4000'
 ];
 
+// cors 2
 app.use(cors({
   credentials: true,
   origin: function (origin, callback) {
@@ -39,26 +51,28 @@ const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
 
 // connect to mLab
-// mongoose.connect(keys.mlab) // development
-mongoose.connect(process.env.MLAB) // production
+mongoose.connect(keys.mlab) // development
+// mongoose.connect(process.env.MLAB) // production
 
 // set up sessions
-// const mongo_store = new MongoStore({ // development
-//   url: keys.mlab,
-//   ttl: 14 * 24 * 60 * 60
-// })
-
-const mongo_store = new MongoStore({ // production
-  url: process.env.MLAB,
+const mongo_store = new MongoStore({ // development
+  url: keys.mlab,
   ttl: 14 * 24 * 60 * 60
 })
+
+// const mongo_store = new MongoStore({ // production
+//   url: process.env.MLAB,
+//   ttl: 14 * 24 * 60 * 60
+// })
 
 app.use(session({
   store: mongo_store,
   secret: 'keyboard cat',
   resave: true,
+  domain: '.changingmindsnow.org',
   saveUninitialized: true,
   cookie: {
+    domain: '.changingmindsnow.org',
     secure: false,
     httpOnly: false
   }
@@ -72,13 +86,6 @@ session.Session.prototype.login = function (user) {
 app.use(express.static(path.join(__dirname, './dist')))
 app.use(bodyParser.json())
 
-// CORS
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*")
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   next()
-// })
 
 app.use('/auth', auth_route)
 app.use('/survey', surveyRoute)
