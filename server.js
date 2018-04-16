@@ -8,7 +8,10 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 //
-const keys = require('./keys.js') // development
+// const keys = require('./keys.js') // development
+const keys = {
+  mlab: 'mongodb://isaac_preston:vpv2008@ds017886.mlab.com:17886/isaac_mongodb',
+}
 //
 
 const app = express()
