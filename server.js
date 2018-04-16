@@ -7,9 +7,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 //
-// const keys = require('./keys.js') // development
-const keys = {
-  // mlab: 'mongodb://isaac_preston:vpv2008@ds017886.mlab.com:17886/isaac_mongodb',
+const keys =  {
   mlab: 'mongodb://chgmindsmdbuser:UFuZDy8Ul3g9LFB@ds123906-a0.mlab.com:23906,ds123906-a1.mlab.com:23906/changingminds?replicaSet=rs-ds123906'
 }
 //
@@ -25,9 +23,9 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
   if ('OPTIONS' == req.method) {
-       res.send(200);
+      res.send(200);
    } else {
-       next();
+      next();
    }
 });
 
@@ -35,28 +33,22 @@ const auth_route = require('./routes/auth.js')
 const surveyRoute = require('./routes/survey.js')
 
 // connect to mLab
-mongoose.connect(keys.mlab) // development
-// mongoose.connect(process.env.MLAB) // production
+mongoose.connect(keys.mlab)
+// mongoose.connect(process.env.MLAB)
 
 // set up sessions
-const mongo_store = new MongoStore({ // development
+const mongo_store = new MongoStore({ 
   url: keys.mlab,
+  // url: process.env.MLAB,
   ttl: 14 * 24 * 60 * 60
 })
-
-// const mongo_store = new MongoStore({ // production
-//   url: process.env.MLAB,
-//   ttl: 14 * 24 * 60 * 60
-// })
 
 app.use(session({
   store: mongo_store,
   secret: 'keyboard cat',
   resave: true,
-  // domain: '.changingmindsnow.org',
   saveUninitialized: true,
   cookie: {
-    // domain: '.changingmindsnow.org',
     secure: false,
     httpOnly: false
   }
