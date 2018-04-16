@@ -1,7 +1,7 @@
 // dependencies
 const express = require('express')
 const path = require('path')
-var session = require('express-session')
+const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
