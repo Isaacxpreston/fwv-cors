@@ -102,7 +102,10 @@ router.post('/login', function(req, res) {
 
 // check if user is authenticated
 router.get('/authenticate', function(req, res) {
+  console.log('authenticating')
+  console.log(req.session)
   if (req.session && req.session.user) { // Check if session exists
+    console.log('user found')
     // lookup the user in the DB by pulling their email from the session
     let queryEmail = req.session.user.email.toLowerCase()
     User.findOne({ email: queryEmail }, function (err, user) {
@@ -119,6 +122,7 @@ router.get('/authenticate', function(req, res) {
       }
     });
   } else {
+    console.log('no user found')
     // fired if no session present
     res.send({authorized: false})
   }
