@@ -88,6 +88,8 @@ router.post('/login', function(req, res) {
       res.send({authorized: false})
     } else { // if user
       console.log('user found, checking passwords')
+      console.log('password: ')
+      console.log(req.body.password)
       if (user.comparePassword(req.body.password)) { // if password match
         console.log('passwords match, logging in')
         req.session.login(user) // call login method
