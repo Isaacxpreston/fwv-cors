@@ -80,13 +80,19 @@ router.post('/update', (req, res) => { // to update pages and info
 // log user in
 router.post('/login', function(req, res) {
   let queryEmail = req.body.email.toLowerCase()
+  console.log('logging in with:')
+  console.log(queryEmail)
   User.findOne({ email: queryEmail }, function(err, user) {
     if (!user) { // if no user
+      console.log('no user found')
       res.send({authorized: false})
     } else { // if user
+      console.log('user found, checking passwords')
       if (user.comparePassword(req.body.password)) { // if password match
+        console.log('passwords match, logging in')
         req.session.login(user) // call login method
         req.session.save((err) => {
+          console.log('log in success')
           res.send({
             authorized: true,
             firstName: user.first_name,
@@ -94,6 +100,7 @@ router.post('/login', function(req, res) {
           })
         })
       } else { // passwords do not match
+        console.log('passwords do not match')
         res.send({authorized: false})
       }
     }
